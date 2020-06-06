@@ -1,0 +1,7 @@
+node_modules
+lib/**/*.js
+lib/**/*.map
+.DS_Store
+build
+.idea
+dist

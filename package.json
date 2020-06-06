@@ -1,0 +1,25 @@
+{
+  "name": "vanillin-extract",
+  "version": "0.2.0",
+  "description": "DOM subset written in TypeScript",
+  "main": "lib/index",
+  "scripts": {
+    "test": "tsc; mocha --recursive './lib/*.test.js'",
+    "dist:compile": "tsc --declaration --outDir build",
+    "dist:copy": "cp package.json README.md .npmignore build/;",
+    "dist:dry": "npm run dist:compile; npm run dist:copy; cd build/; npm publish --dry-run",
+    "dist": "npm run dist:compile; npm run dist:copy; cd build/; npm publish"
+  },
+  "author": "Bartosz Krupa",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/node": "^12.11.7",
+    "chai": "^4.2.0",
+    "chai-subset": "^1.6.0",
+    "metaes": "^3.0.0",
+    "mocha": "^6.2.1",
+    "typescript": "^3.9.3"
+  }
+}
