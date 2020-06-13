@@ -345,7 +345,9 @@ export class HTMLElement extends Node {
     const attributes = this._attributes.length ? " " + this._attributes.toSource() : "";
     const children = this.childNodes.map((child) => child.toSource()).join("");
 
-    return `<${this.nodeName}${attributes}>${children}</${this.nodeName}>`;
+    return !children && selfClosingTags.includes(this.nodeName)
+      ? `<${this.nodeName}${attributes} />`
+      : `<${this.nodeName}${attributes}>${children}</${this.nodeName}>`;
   }
 
   get textContent() {
