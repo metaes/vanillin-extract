@@ -183,6 +183,20 @@ export abstract class Node extends EventTarget {
     this._attributes.removeNamedItem(attributeName);
   }
 
+  set innerHTML(value: string) {
+    if (value !== "") {
+      throw new Error("Only empty string is supported at this moment.");
+    }
+    for (let i = 0; i < this._childNodes.length; i++) {
+      this._childNodes[i].parentNode = null;
+    }
+    this._childNodes.length = 0;
+  }
+
+  get innerHTML() {
+    return this.childNodes.map((child) => child.toSource()).join("");
+  }
+
   abstract get textContent(): string;
   abstract set textContent(value: string);
 
@@ -363,16 +377,6 @@ export class HTMLElement extends Node {
     return this._styleMap;
   }
 
-  set innerHTML(value: string) {
-    if (value !== "") {
-      throw new Error("Only empty string is supported at this moment.");
-    }
-    for (let i = 0; i < this._childNodes.length; i++) {
-      this._childNodes[i].parentNode = null;
-    }
-    this._childNodes.length = 0;
-  }
-
   cloneNode(deep: boolean) {
     let children = deep ? this.childNodes.map((child) => child.cloneNode(deep)) : Array.from(this.childNodes);
     return new HTMLElement(this.ownerDocument, this.nodeName, this._attributes.clone(), children);
@@ -459,12 +463,10 @@ export class DocumentFragment extends Node {
 }
 
 export class DOMParser {
-  private _window = new Window();
-
   parseFromString(string) {
     return {
       head: { childNodes: [] },
-      body: { childNodes: parse(string, this._window) }
+      body: { childNodes: parse(string) }
     };
   }
 }

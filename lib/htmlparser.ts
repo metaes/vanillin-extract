@@ -6,6 +6,7 @@ import {
   IDENTIFIER_REGEX,
   COMMENT_END,
   COMMENT_START,
+  Node,
   HTMLElement
 } from "./dom-extract";
 
