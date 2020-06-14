@@ -50,11 +50,20 @@ describe("innerHTML", function () {
     ul.innerHTML = "";
     assert.equal(ul.childNodes.length, 0);
   });
-  it("sets and gets innerHTML with HTML", function () {
-    const window = new Window();
-    const body = window.document;
 
-    body.innerHTML = "<div>test</div>";
-    assert.equal(body.innerHTML);
+  it("sets and gets innerHTML with using correct HTML", function () {
+    const { body } = new Window().document;
+
+    body.innerHTML = "<meta><link><strong>test <span>test</span></strong>";
+    assert.lengthOf(body.childNodes, 3);
+    assert.equal(body.innerHTML, `<meta /><link /><strong>test <span>test</span></strong>`);
+  });
+
+  it("(currently) do not allow to set incomplete HTML", function () {
+    const { body } = new Window().document;
+
+    assert.throws(function () {
+      body.innerHTML = "<div";
+    });
   });
 });

@@ -184,13 +184,23 @@ export abstract class Node extends EventTarget {
   }
 
   set innerHTML(value: string) {
-    if (value !== "") {
-      throw new Error("Only empty string is supported at this moment.");
-    }
     for (let i = 0; i < this._childNodes.length; i++) {
       this._childNodes[i].parentNode = null;
     }
+
     this._childNodes.length = 0;
+    if (value !== "") {
+      try {
+        const results = parseHTML(value, { document: this.ownerDocument });
+        for (let i = 0; i < results.length; i++) {
+          this.appendChild(results[i]);
+        }
+      } catch (e) {
+        throw new DOMException(
+          `Assigning incorrect HTML string is not supported yet. Original error message: "${e.message}"`
+        );
+      }
+    }
   }
 
   get innerHTML() {

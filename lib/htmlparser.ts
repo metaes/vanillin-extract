@@ -7,7 +7,8 @@ import {
   COMMENT_END,
   COMMENT_START,
   Node,
-  HTMLElement
+  HTMLElement,
+  Window
 } from "./dom-extract";
 
 class HTMLParseError extends Error {
