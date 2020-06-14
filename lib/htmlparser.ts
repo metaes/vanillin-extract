@@ -6,7 +6,9 @@ import {
   IDENTIFIER_REGEX,
   COMMENT_END,
   COMMENT_START,
-  HTMLElement
+  Node,
+  HTMLElement,
+  Window
 } from "./dom-extract";
 
 class HTMLParseError extends Error {
