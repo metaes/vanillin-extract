@@ -1,5 +1,5 @@
 declare namespace Chai {
   interface Assertion {
-    containSubset: Chai.Include;
+    containSubsetInOrder: Chai.Include;
   }
 }

@@ -2,7 +2,7 @@ import * as chai from "chai";
 import { parse } from "./dom-extract";
 import { Window } from "./dom-extract";
 
-chai.use(require("chai-subset"));
+chai.use(require("chai-subset-in-order"));
 
 const { assert } = chai;
 

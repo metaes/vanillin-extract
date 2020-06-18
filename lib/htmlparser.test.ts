@@ -1,7 +1,7 @@
 import { parse } from "./dom-extract";
 import * as chai from "chai";
 import { Node } from "./dom-extract";
-chai.use(require("chai-subset"));
+chai.use(require("chai-subset-in-order"));
 
 const tests = {
   "self closing": [
@@ -61,7 +61,20 @@ const tests = {
         childNodes: [
           { nodeType: Node.TEXT_NODE, textContent: "text1" },
           { nodeType: Node.ELEMENT_NODE, nodeName: "b" },
-          { nodeType: Node.TEXT_NODE, textContent: "text1" }
+          { nodeType: Node.TEXT_NODE, textContent: "text2" }
+        ]
+      }
+    ]
+  ],
+  "text node with included whitespace": [
+    `<a> text1 <b /> text2</a>`,
+    [
+      {
+        nodeName: "a",
+        childNodes: [
+          { nodeType: Node.TEXT_NODE, textContent: " text1 " },
+          { nodeType: Node.ELEMENT_NODE, nodeName: "b" },
+          { nodeType: Node.TEXT_NODE, textContent: " text2" }
         ]
       }
     ]
@@ -105,7 +118,7 @@ describe("Parse", function () {
       let parsed;
       try {
         parsed = parse(input as string);
-        chai.expect(parsed).to.containSubset(output);
+        chai.expect(parsed).to.containSubsetInOrder(output);
       } catch (e) {
         console.log("For input: ", input);
         throw e;
