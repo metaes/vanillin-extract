@@ -18,7 +18,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^12.11.7",
     "chai": "^4.2.0",
-    "chai-subset": "^1.6.0",
+    "chai-subset-in-order": "^2.1.4",
     "metaes": "^3.0.0",
     "mocha": "^6.2.1",
     "typescript": "^3.9.3"

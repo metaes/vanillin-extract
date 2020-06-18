@@ -194,27 +194,29 @@ export function parse(input: string, window: Window) {
 
   function parseAdjacentNodesList(input: string) {
     const nodes: Node[] = [];
-    let rest = input.trimLeft();
-    while (rest) {
-      if (rest.startsWith(COMMENT_START)) {
-        let [comment, after] = parseComment(rest);
+    let remainingInput = input;
+
+    while (remainingInput) {
+      let inputTrimmed = remainingInput.trimLeft();
+      if (inputTrimmed.startsWith(COMMENT_START)) {
+        let [comment, after] = parseComment(inputTrimmed);
         nodes.push(comment);
-        rest = after.trimLeft();
-      } else if (rest.startsWith("<")) {
-        if (rest.startsWith(CLOSE_TAG_START)) {
-          return <const>[nodes, rest];
+        remainingInput = after;
+      } else if (inputTrimmed.startsWith("<")) {
+        if (inputTrimmed.startsWith(CLOSE_TAG_START)) {
+          return <const>[nodes, inputTrimmed];
         } else {
-          let [element, after] = parseElement(rest);
+          let [element, after] = parseElement(inputTrimmed);
           nodes.push(element);
-          rest = after.trimLeft();
+          remainingInput = after;
         }
       } else {
-        const [text, after] = parseTextContent(rest);
+        const [text, after] = parseTextContent(remainingInput);
         nodes.push(text);
-        rest = after.trimLeft();
+        remainingInput = after;
       }
     }
-    return <const>[nodes, rest];
+    return <const>[nodes, remainingInput];
   }
   return parseAdjacentNodesList(input)[0];
 }
