@@ -102,6 +102,7 @@ export function parse(input: string, window: Window) {
           childNodes.push(textNode);
         }
       }
+      throw new Error("Couldn't find close tag.");
     } else {
       throw new HTMLParseError("Expected '<'", input);
     }
