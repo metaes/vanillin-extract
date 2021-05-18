@@ -75,22 +75,22 @@ export class NamedNodeMap {
 
 class EventTarget {
   addEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject | null,
-    options?: boolean | AddEventListenerOptions
+    _type: string,
+    _listener: EventListenerOrEventListenerObject | null,
+    _options?: boolean | AddEventListenerOptions
   ): void {
     console.log(`Warning: 'addEventListener' called but ignored.`);
   }
 
-  dispatchEvent(event: Event): boolean {
+  dispatchEvent(_event: Event): boolean {
     console.log(`Warning: 'dispatchEvent' called but ignored.`);
     return false;
   }
 
   removeEventListener(
-    type: string,
-    callback: EventListenerOrEventListenerObject | null,
-    options?: EventListenerOptions | boolean
+    _type: string,
+    _callback: EventListenerOrEventListenerObject | null,
+    _options?: EventListenerOptions | boolean
   ): void {
     console.log(`Warning: 'removeEventListener' called but ignored.`);
   }
@@ -124,7 +124,7 @@ export abstract class Node extends EventTarget {
   }
 
   constructor(
-    private _ownerDocument: HTMLDocument,
+    private _ownerDocument: HTMLDocument | undefined | null,
     public nodeType: number,
     protected _attributes: NamedNodeMap = new NamedNodeMap([]),
     protected _childNodes: Node[] = []
@@ -174,7 +174,7 @@ export abstract class Node extends EventTarget {
   }
 
   setAttribute(name: string, value?: string) {
-    const attr = this.ownerDocument.createAttribute(name);
+    const attr = this.ownerDocument!.createAttribute(name);
     attr.value = value;
     this._attributes.setNamedItem(attr);
   }
@@ -191,7 +191,7 @@ export abstract class Node extends EventTarget {
     this._childNodes.length = 0;
     if (value !== "") {
       try {
-        const results = parseHTML(value, { document: this.ownerDocument });
+        const results = parseHTML(value, { document: this.ownerDocument! } as Window);
         for (let i = 0; i < results.length; i++) {
           this.appendChild(results[i]);
         }
@@ -207,8 +207,8 @@ export abstract class Node extends EventTarget {
     return this.childNodes.map((child) => child.toSource()).join("");
   }
 
-  abstract get textContent(): string;
-  abstract set textContent(value: string);
+  abstract get textContent(): string | undefined;
+  abstract set textContent(value: string | undefined);
 
   get attributes() {
     return this._attributes;
@@ -324,6 +324,8 @@ export abstract class Node extends EventTarget {
 }
 
 export class Attr extends Node {
+  textContent = undefined;
+
   constructor(ownerDocument: HTMLDocument, public name: string, public value?: string) {
     super(ownerDocument, Node.ATTRIBUTE_NODE);
   }
@@ -333,7 +335,7 @@ export class Attr extends Node {
   }
 
   clone() {
-    return new Attr(this.ownerDocument, this.name, this.value);
+    return new Attr(this.ownerDocument!, this.name, this.value);
   }
 
   cloneNode() {
@@ -380,7 +382,7 @@ export class HTMLElement extends Node {
 
   set textContent(value: string) {
     // TODO: remove children first
-    this._childNodes = [this.ownerDocument.createTextNode(value)];
+    this._childNodes = [this.ownerDocument!.createTextNode(value)];
   }
 
   get style(): CSSStyleDeclaration {
@@ -389,7 +391,7 @@ export class HTMLElement extends Node {
 
   cloneNode(deep: boolean) {
     let children = deep ? this.childNodes.map((child) => child.cloneNode(deep)) : Array.from(this.childNodes);
-    return new HTMLElement(this.ownerDocument, this.nodeName, this._attributes.clone(), children);
+    return new HTMLElement(this.ownerDocument!, this.nodeName, this._attributes.clone(), children);
   }
 }
 
@@ -422,7 +424,7 @@ export class Comment extends Node {
   }
 
   cloneNode(_deep: boolean) {
-    return new Comment(this.ownerDocument, this.textContent);
+    return new Comment(this.ownerDocument!, this.textContent);
   }
 }
 
@@ -444,13 +446,17 @@ export class Text extends Node {
   }
 
   cloneNode(_deep: boolean) {
-    return new Text(this.ownerDocument, this.textContent);
+    return new Text(this.ownerDocument!, this.textContent);
   }
 }
 
 export class DocumentFragment extends Node {
   get children() {
     return getChildren(this);
+  }
+
+  set children(value: Node[]) {
+    this._childNodes = value;
   }
 
   constructor(ownerDocument: HTMLDocument) {
@@ -462,7 +468,7 @@ export class DocumentFragment extends Node {
   }
 
   cloneNode(deep: boolean) {
-    const fragment = new DocumentFragment(this.ownerDocument);
+    const fragment = new DocumentFragment(this.ownerDocument!);
     fragment.children = this.childNodes.map((child) => child.cloneNode(deep));
     return fragment;
   }
@@ -482,6 +488,22 @@ export class DOMParser {
 }
 
 export class HTMLDocument extends Node {
+  get textContent(): string {
+    throw new Error("Method not implemented.");
+  }
+
+  set textContent(_value: string) {
+    throw new Error("Method not implemented.");
+  }
+
+  cloneNode(_deep: boolean) {
+    throw new Error("Method not implemented.");
+  }
+
+  toSource(): string {
+    throw new Error("Method not implemented.");
+  }
+
   private _head: HTMLElement;
   private _body: HTMLElement;
 

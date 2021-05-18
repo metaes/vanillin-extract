@@ -9,7 +9,7 @@ const { assert } = chai;
 describe("Selectors", function () {
   it("supports querySelector using nodename", function () {
     const element = parse(`<ul><li></li></ul>`);
-    assert.equal(element[0].querySelector("li").nodeName, "li");
+    assert.equal(element[0].querySelector("li")?.nodeName, "li");
   });
 
   it("supports querySelectorAll using nodename", function () {
