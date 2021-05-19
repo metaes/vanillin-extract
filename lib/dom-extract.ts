@@ -126,6 +126,7 @@ export abstract class Node extends EventTarget {
   constructor(
     private _ownerDocument: HTMLDocument | undefined | null,
     public nodeType: number,
+    public nodeName?: string | undefined,
     protected _attributes: NamedNodeMap = new NamedNodeMap([]),
     protected _childNodes: Node[] = []
   ) {
@@ -356,11 +357,11 @@ export class HTMLElement extends Node {
 
   constructor(
     ownerDocument: HTMLDocument,
-    public nodeName: string,
+    nodeName: string,
     attributes: NamedNodeMap = new NamedNodeMap([]),
     children: Node[] = []
   ) {
-    super(ownerDocument, Node.ELEMENT_NODE, attributes, children);
+    super(ownerDocument, Node.ELEMENT_NODE, nodeName, attributes, children);
   }
 
   get children() {
@@ -371,7 +372,7 @@ export class HTMLElement extends Node {
     const attributes = this._attributes.length ? " " + this._attributes.toSource() : "";
     const children = this.childNodes.map((child) => child.toSource()).join("");
 
-    return !children && selfClosingTags.includes(this.nodeName)
+    return !children && selfClosingTags.includes(this.nodeName!)
       ? `<${this.nodeName}${attributes} />`
       : `<${this.nodeName}${attributes}>${children}</${this.nodeName}>`;
   }
@@ -391,7 +392,7 @@ export class HTMLElement extends Node {
 
   cloneNode(deep: boolean) {
     let children = deep ? this.childNodes.map((child) => child.cloneNode(deep)) : Array.from(this.childNodes);
-    return new HTMLElement(this.ownerDocument!, this.nodeName, this._attributes.clone(), children);
+    return new HTMLElement(this.ownerDocument!, this.nodeName!, this._attributes.clone(), children);
   }
 }
 
