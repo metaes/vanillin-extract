@@ -27,6 +27,10 @@ export const selfClosingTags = [
 class DOMException extends Error {}
 
 export class NamedNodeMap {
+  get [Symbol.toStringTag]() {
+    return "NamedNodeMap";
+  }
+
   constructor(private _attributes: Attr[]) {}
 
   getNamedItem(qualifiedName: string): Attr | undefined {
@@ -74,6 +78,10 @@ export class NamedNodeMap {
 }
 
 class EventTarget {
+  get [Symbol.toStringTag]() {
+    return "EventTarget";
+  }
+
   addEventListener(
     _type: string,
     _listener: EventListenerOrEventListenerObject | null,
@@ -103,6 +111,10 @@ class StopIteration extends Error {
 }
 
 export abstract class Node extends EventTarget {
+  get [Symbol.toStringTag]() {
+    return "Node";
+  }
+
   static ELEMENT_NODE = 1;
   static ATTRIBUTE_NODE = 2;
   static TEXT_NODE = 3;
@@ -325,6 +337,10 @@ export abstract class Node extends EventTarget {
 }
 
 export class Attr extends Node {
+  get [Symbol.toStringTag]() {
+    return "Attr";
+  }
+
   textContent = undefined;
 
   constructor(ownerDocument: HTMLDocument, public name: string, public value?: string) {
@@ -353,6 +369,10 @@ function getChildren(node: Node) {
 }
 
 export class HTMLElement extends Node {
+  get [Symbol.toStringTag]() {
+    return "HTMLElement";
+  }
+
   private _styleMap = {} as CSSStyleDeclaration;
 
   constructor(
@@ -397,6 +417,10 @@ export class HTMLElement extends Node {
 }
 
 export class HTMLTemplateElement extends Node {
+  get [Symbol.toStringTag]() {
+    return "HTMLTemplateElement";
+  }
+
   get textContent(): string {
     throw new Error("Method not implemented.");
   }
@@ -412,6 +436,10 @@ export class HTMLTemplateElement extends Node {
 }
 
 export class Comment extends Node {
+  get [Symbol.toStringTag]() {
+    return "Comment";
+  }
+
   constructor(ownerDocument: HTMLDocument, private _textContent: string = "") {
     super(ownerDocument, Node.COMMENT_NODE);
   }
@@ -430,6 +458,10 @@ export class Comment extends Node {
 }
 
 export class Text extends Node {
+  get [Symbol.toStringTag]() {
+    return "Text";
+  }
+
   constructor(ownerDocument: HTMLDocument, private _textContent: string = "") {
     super(ownerDocument, Node.TEXT_NODE);
   }
@@ -452,6 +484,10 @@ export class Text extends Node {
 }
 
 export class DocumentFragment extends Node {
+  get [Symbol.toStringTag]() {
+    return "DocumentFragment";
+  }
+
   get children() {
     return getChildren(this);
   }
@@ -480,6 +516,10 @@ export class DocumentFragment extends Node {
 }
 
 export class DOMParser {
+  get [Symbol.toStringTag]() {
+    return "DOMParser";
+  }
+
   parseFromString(string) {
     return {
       head: { childNodes: [] },
@@ -489,6 +529,10 @@ export class DOMParser {
 }
 
 export class HTMLDocument extends Node {
+  get [Symbol.toStringTag]() {
+    return "HTMLDocument";
+  }
+
   get textContent(): string {
     throw new Error("Method not implemented.");
   }
@@ -552,6 +596,10 @@ class NodeList {}
 class HTMLCollection {}
 
 export class Window {
+  get [Symbol.toStringTag]() {
+    return "Window";
+  }
+
   document: HTMLDocument;
   fetch: typeof fetch;
   DOMParser = DOMParser;
