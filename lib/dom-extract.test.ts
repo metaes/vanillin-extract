@@ -1,10 +1,31 @@
 import * as chai from "chai";
-import { parse } from "./dom-extract";
+import { Node, parse } from "./dom-extract";
 import { Window } from "./dom-extract";
 
 chai.use(require("chai-subset-in-order"));
 
 const { assert } = chai;
+
+describe("append/prepend", function () {
+  it("supports .prepend() method", function () {
+    const div = parse(`<div><span>a text</span></div>`)[0];
+    assert.isTrue(div.childNodes[0].nodeName === "span");
+
+    // test prepending text nodes
+    div?.prepend("hello", "hello2");
+    assert.isTrue(div.childNodes[0].nodeType === Node.TEXT_NODE);
+    assert.deepEqual(
+      div.childNodes.map((node) => node.textContent),
+      ["hello", "hello2", "a text"]
+    );
+
+    // test adding element nodes
+    const document = div.ownerDocument;
+    const p = document?.createElement("p");
+    div.prepend(p!);
+    assert.isTrue(div.childNodes[0].nodeName === "p");
+  });
+});
 
 describe("Selectors", function () {
   it("supports querySelector using nodename", function () {

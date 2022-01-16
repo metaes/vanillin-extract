@@ -150,6 +150,19 @@ export abstract class Node extends EventTarget {
     }
   }
 
+  prepend(...nodes: (Node | string)[]) {
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const item = nodes[i];
+      const node = typeof item === "string" ? this.ownerDocument!.createTextNode(item) : item;
+
+      this.childNodes.unshift(node);
+      if (node.parentNode) {
+        node.parentNode.removeChild(node);
+      }
+      node.parentNode = this;
+    }
+  }
+
   appendChild(element: Node) {
     if (element instanceof DocumentFragment) {
       for (let i = 0; i < element.childNodes.length; i++) {
