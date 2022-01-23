@@ -74,6 +74,8 @@ export class NamedNodeMap {
       }
     }
     this._attributes.push(attr);
+    // TODO: add test
+    this[attr.name] = attr;
   }
 }
 
